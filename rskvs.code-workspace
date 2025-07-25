@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "RSKVS",
+      "settings": {
+        "rust-analyzer.linkedProjects": ["{workspaceDir}/Cargo.toml"],
+        "rust-analyzer.showUnlinkedFileNotification": false,
+        "[rust]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "rust-lang.rust-analyzer"
+        }
+      }
+    }
+  ],
+  "settings": {
+    "workbench.colorTheme": "Lunar Pink"
+  }
+}
