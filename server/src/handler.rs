@@ -1,3 +1,4 @@
+mod delete;
 mod get;
 mod set;
 
@@ -29,6 +30,8 @@ pub async fn handle_connection(mut stream: TcpStream, db: Arc<Mutex<KvsEngine>>,
                     Ok(Command::Set(key, value)) => set::handle(db.clone(), key, value),
                     // データの取得
                     Ok(Command::Get(key)) => get::handle(db.clone(), key),
+                    // データの削除
+                    Ok(Command::Delete(key)) => delete::handle(db.clone(), key),
                     // 終了
                     Ok(Command::Exit) => {
                         println!(" Connection closed by client: {}", addr);
