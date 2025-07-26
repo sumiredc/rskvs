@@ -8,7 +8,7 @@ tasks:
       - tokio-console
   server:
     cmds:
-      - cargo run
+      - cargo run -p server
   client:
     cmds:
-      - cargo run --bin client
+      - cargo run -p client

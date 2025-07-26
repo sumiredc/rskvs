@@ -196,6 +196,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9555578bc9e57714c812a1f84e4fc5b4d21fcb063490c624de019f7464c91268"
 
 [[package]]
+name = "client"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "console-subscriber",
+ "futures",
+ "num_cpus",
+ "serde",
+ "tokio",
+]
+
+[[package]]
 name = "console-api"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -918,18 +930,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
-name = "rskvs"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "console-subscriber",
- "futures",
- "num_cpus",
- "serde",
- "tokio",
-]
-
-[[package]]
 name = "rustc-demangle"
 version = "0.1.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -983,6 +983,18 @@ dependencies = [
  "memchr",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "console-subscriber",
+ "futures",
+ "num_cpus",
+ "serde",
+ "tokio",
 ]
 
 [[package]]
