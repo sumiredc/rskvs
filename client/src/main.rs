@@ -9,7 +9,6 @@ async fn main() {
     // TCP サーバーへ非同期で接続を試みる
     let mut stream = TcpStream::connect("127.0.0.1:8000").await.unwrap();
     println!("✅️ Connect to KVS server.");
-    println!("➡️ Usage: set <key> <value> OR get <key> | exit");
 
     let (reader, mut writer) = stream.split();
     // バッファ付きリーダーを生成
@@ -49,6 +48,6 @@ async fn main() {
         // サーバーからの応答を読み取って表示
         server_response.clear();
         reader.read_line(&mut server_response).await.unwrap();
-        print!("< {}", server_response);
+        println!("{}", server_response);
     }
 }
