@@ -1,34 +1,13 @@
+use core::KvsEngine;
 use std::{
-    collections::HashMap,
     net::SocketAddr,
     str::FromStr,
     sync::{Arc, Mutex},
 };
-
 use tokio::{
     io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
     net::{TcpListener, TcpStream},
 };
-
-struct KvsEngine {
-    store: HashMap<String, String>,
-}
-
-impl KvsEngine {
-    fn new() -> Self {
-        KvsEngine {
-            store: HashMap::new(),
-        }
-    }
-
-    fn set(&mut self, key: String, value: String) {
-        self.store.insert(key, value);
-    }
-
-    fn get(&self, key: String) -> Option<String> {
-        self.store.get(&key).cloned()
-    }
-}
 
 // コマンド定義
 #[derive(Debug)]
