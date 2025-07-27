@@ -3,13 +3,19 @@ mod handler;
 
 use core::KvsEngine;
 use handler::handle_connection;
-use std::sync::{Arc, Mutex};
+use std::{
+    path::PathBuf,
+    sync::{Arc, Mutex},
+};
 use tokio::net::TcpListener;
 
 #[tokio::main()]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("127.0.0.1:8000").await.unwrap();
     println!("🚀 KVS server listening on 127.0.0.1:8000");
+
+    let log_path = PathBuf::from("logs/append-only.log");
+    let engine = KvsEngine::new(log_path)?;
 
     // Arc:
     //  あるデータへの所有権を複数の場所で共有できるようにするスマートポインタ
@@ -21,7 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //  アクセス前に lock() を呼び出し、鍵を取得（他のタスクがロック中なら待機）
     //  ロック成功時に MutexGuard が返ってきて、安全にデータへアクセスできる
     //  MutexGuard がスコープを抜けるとロックが自動的に開放される
-    let db = Arc::new(Mutex::new(KvsEngine::new()));
+    let db = Arc::new(Mutex::new(engine));
 
     loop {
         // 新しいクライアントからの TCP 接続を待ち受ける処理

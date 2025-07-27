@@ -2,7 +2,8 @@ use core::KvsEngine;
 use std::sync::{Arc, Mutex};
 
 pub fn handle(db: Arc<Mutex<KvsEngine>>, key: String) -> String {
-    // データを削除
-    db.lock().unwrap().delete(key);
-    "OK\n".to_string()
+    match db.lock().unwrap().delete(key) {
+        Ok(_) => "OK\n".to_string(),
+        Err(_) => "Error: Could not write to log file.\n".to_string(),
+    }
 }
