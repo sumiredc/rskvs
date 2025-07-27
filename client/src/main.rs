@@ -40,6 +40,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         if user_input.trim() == "exit" {
             println!("👋 Exiting.");
+            // サーバーへ exit コマンドを送信して終了
+            writer.write_all(user_input.as_bytes()).await?;
             break;
         }
 
@@ -49,6 +51,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // サーバーからの応答を読み取って表示
         server_response.clear();
         reader.read_line(&mut server_response).await?;
+
+        // サーバーが応答なく接続を閉じた際に、0 が返ってくるのでループを抜ける
+        if server_response.is_empty() {
+            println!("\n 🔌 Connection closed by server.");
+            break;
+        }
+
         println!("{}", server_response);
     }
 
