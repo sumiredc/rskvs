@@ -1,8 +1,8 @@
 mod command;
 mod handler;
 
-use core::KvsEngine;
 use handler::handle_connection;
+use rskvs_core::KvsEngine;
 use std::{
     path::PathBuf,
     sync::{Arc, Mutex},

@@ -1,9 +1,11 @@
-use core::KvsEngine;
+use rskvs_core::KvsEngine;
 use std::sync::{Arc, Mutex};
 
-pub fn handle(db: Arc<Mutex<KvsEngine>>, key: String) -> String {
-    match db.lock().unwrap().delete(key) {
-        Ok(_) => "OK\n".to_string(),
-        Err(_) => "Error: Could not write to log file.\n".to_string(),
-    }
+use crate::handler::error::ServerError;
+
+pub fn handle(db: Arc<Mutex<KvsEngine>>, key: String) -> Result<String, ServerError> {
+    let mut db_lock = db.lock().map_err(|_| ServerError::LockError)?;
+    db_lock.delete(key)?;
+
+    Ok("OK\n".to_string())
 }

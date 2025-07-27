@@ -1,13 +1,17 @@
 mod delete;
+mod error;
 mod get;
 mod set;
 
+use crate::handler::error::ServerError;
+
 use super::command::Command;
-use core::KvsEngine;
+use rskvs_core::KvsEngine;
 use std::{
     net::SocketAddr,
     sync::{Arc, Mutex},
 };
+
 use tokio::{
     io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
     net::TcpStream,
@@ -25,7 +29,7 @@ pub async fn handle_connection(mut stream: TcpStream, db: Arc<Mutex<KvsEngine>>,
             Ok(0) => break, // 接続が切れた
             Ok(_) => {
                 // コマンドを解釈・実行
-                let response = match line.parse::<Command>() {
+                let res = match line.parse::<Command>() {
                     // データの保存
                     Ok(Command::Set(key, value)) => set::handle(db.clone(), key, value),
                     // データの取得
@@ -37,7 +41,12 @@ pub async fn handle_connection(mut stream: TcpStream, db: Arc<Mutex<KvsEngine>>,
                         println!(" Connection closed by client: {}", addr);
                         break;
                     }
-                    _ => "Invalid command. Use: set <key> <value> OR get <key>\n".to_string(),
+                    Err(_) => Err(ServerError::InvalidCommand),
+                };
+
+                let response = match res {
+                    Ok(msg) => msg,
+                    Err(err) => format!("Error: {}", err),
                 };
 
                 // レスポンスをクライアントに送信

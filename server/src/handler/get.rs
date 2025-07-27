@@ -1,12 +1,13 @@
-use core::KvsEngine;
+use rskvs_core::KvsEngine;
 use std::sync::{Arc, Mutex};
 
-pub fn handle(db: Arc<Mutex<KvsEngine>>, key: String) -> String {
-    // 排他制御してデータストアにアクセス
-    let db_lock = db.lock().unwrap();
-    // データを取得
+use crate::handler::error::ServerError;
+
+pub fn handle(db: Arc<Mutex<KvsEngine>>, key: String) -> Result<String, ServerError> {
+    let db_lock = db.lock().map_err(|_| ServerError::LockError)?;
+
     match db_lock.get(key.to_string()) {
-        Some(value) => format!("{}\n", value),
-        None => "Key not found\n".to_string(),
+        Some(value) => Ok(format!("{}\n", value)),
+        None => Ok("Key not found\n".to_string()),
     }
 }

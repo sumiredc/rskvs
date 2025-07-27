@@ -10,4 +10,5 @@ futures = "0.3.31"
 num_cpus = "1.17.0"
 serde = { version = "1.0.219", features = ["derive"] }
 tokio = { version = "1.46.1", features = ["full"] }
-core = { path = "../core" }
+rskvs_core = { path = "../core" }
+thiserror = "2.0.12"
