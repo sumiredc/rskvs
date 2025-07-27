@@ -11,7 +11,7 @@ use tokio::net::TcpListener;
 
 #[tokio::main()]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind("127.0.0.1:8000").await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:8000").await?;
     println!("🚀 KVS server listening on 127.0.0.1:8000");
 
     let log_path = PathBuf::from("logs/append-only.log");
@@ -31,15 +31,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     loop {
         // 新しいクライアントからの TCP 接続を待ち受ける処理
-        let (stream, addr) = listener.accept().await.unwrap();
-        println!("✅️ Accepted connection from: {}", addr);
+        match listener.accept().await {
+            Ok((stream, addr)) => {
+                println!("✅️ Accepted connection from: {}", addr);
 
-        // 新しい接続ごとに、データベースへのポインタをクローンして渡す
-        let db_clone = Arc::clone(&db);
+                // 新しい接続ごとに、データベースへのポインタをクローンして渡す
+                let db_clone = Arc::clone(&db);
 
-        // 新しいタスクを並列起動して、接続を処理する
-        tokio::spawn(async move {
-            handle_connection(stream, db_clone, addr).await;
-        });
+                // 新しいタスクを並列起動して、接続を処理する
+                tokio::spawn(async move {
+                    handle_connection(stream, db_clone, addr).await;
+                });
+            }
+            Err(e) => {
+                eprintln!("Failed to accept connection: {}", e);
+            }
+        }
     }
 }
