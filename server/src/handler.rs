@@ -46,7 +46,7 @@ pub async fn handle_connection(mut stream: TcpStream, db: Arc<Mutex<KvsEngine>>,
 
                 let response = match res {
                     Ok(msg) => msg,
-                    Err(err) => format!("Error: {}", err),
+                    Err(err) => format!("Error: {}\n", err),
                 };
 
                 // レスポンスをクライアントに送信

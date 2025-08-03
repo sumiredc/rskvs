@@ -1,6 +1,6 @@
-# https://taskfile.dev
-
 version: "3"
+
+dotenv: [".env"]
 
 tasks:
   tokio:
@@ -9,6 +9,22 @@ tasks:
   server:
     cmds:
       - cargo run -p server
+  build-server:
+    cmds:
+      - cargo build --release --target aarch64-unknown-linux-gnu -p server
+  deploy-server:
+    cmds:
+      - scp target/aarch64-unknown-linux-gnu/release/server $SERVER:~/rskvs-server
+      - scp .env.production $SERVER:~/.env
+
   client:
     cmds:
       - cargo run -p client
+
+  client-prod:
+    cmds:
+      - CONNECT_ADDR=192.168.11.10:8000 cargo run -p client
+
+  clean:
+    cmds:
+      - cargo clean

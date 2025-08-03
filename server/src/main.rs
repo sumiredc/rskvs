@@ -1,9 +1,11 @@
 mod command;
 mod handler;
 
+use dotenvy::dotenv;
 use handler::handle_connection;
 use rskvs_core::KvsEngine;
 use std::{
+    env,
     path::PathBuf,
     sync::{Arc, Mutex},
 };
@@ -11,10 +13,18 @@ use tokio::net::TcpListener;
 
 #[tokio::main()]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind("127.0.0.1:8000").await?;
-    println!("🚀 KVS server listening on 127.0.0.1:8000");
+    // .env を読み込み
+    dotenv().ok();
 
-    let log_path = PathBuf::from("logs/append-only.log");
+    let listen_addr = env::var("LISTEN_ADDR").unwrap_or_else(|_| String::new());
+    let log_path_str = env::var("LOG_PATH").unwrap_or_else(|_| String::new());
+
+    println!("... Try to listening on {}", listen_addr);
+    let listener = TcpListener::bind(&listen_addr).await?;
+    println!("🚀 KVS server listening on {}", listen_addr);
+
+    println!("📝 Append Only Logs loading to {}", log_path_str);
+    let log_path = PathBuf::from(log_path_str);
     let engine = KvsEngine::new(log_path)?;
 
     // Arc:

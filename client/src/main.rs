@@ -1,4 +1,6 @@
+use dotenvy::dotenv;
 use std::{
+    env,
     error::Error,
     io::{Write, stdin, stdout},
 };
@@ -9,8 +11,14 @@ use tokio::{
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // .env を読み込み
+    dotenv().ok();
+
+    let connect_addr = env::var("CONNECT_ADDR").unwrap_or_else(|_| String::new());
+
     // TCP サーバーへ非同期で接続を試みる
-    let mut stream = TcpStream::connect("127.0.0.1:8000").await?;
+    println!("... Try to connecting to {}", connect_addr);
+    let mut stream = TcpStream::connect(connect_addr).await?;
     println!("✅️ Connect to KVS server.");
 
     let (reader, mut writer) = stream.split();
